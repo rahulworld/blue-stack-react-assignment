@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  color: #556789;
+}
+
+.sub-header-color {
+  /* font-family: Roboto; */
+  font-style: normal;
+  font-weight: bold;
+  font-size: 48px;
+  line-height: 50px;
+  color: #2B416C;
+}
+
+.nav-link {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.active-nav-item {
+  border-bottom: 3px solid #83A515;
+  color: #83A515;
+}
