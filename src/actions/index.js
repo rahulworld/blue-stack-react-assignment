@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { EVENT_DATA, EVENT_TYPE } from '../shared/constants';
+import { EVENT_DATA, EVENT_TYPE, getDiffInDays, getDiffInNumber } from '../shared/constants';
 export const GET_EVENT_DATA = 'BLUE_SACK/GET_EVENT_DATA';
 export const SET_EVENT_DATA = 'BLUE_SACK/SET_EVENT_DATA';
 export const SCHEDULE_EVENT = 'BLUE_SACK/SCHEDULE_EVENT';
@@ -29,7 +29,7 @@ export const setEventData = (eventType) => async (dispatch) => {
         } else if (eventType === 'PAST') {
             payload = payload.filter((item) => (new Date(item.createdOn) < new Date()));
         } else if (eventType === 'LIVE') {
-            payload = payload.filter((item) => (new Date(item.createdOn) == new Date()));
+            payload = payload.filter((item) => (getDiffInNumber(item.createdOn) === 0));
         }
         dispatch({
             type: GET_EVENT_DATA,
@@ -44,11 +44,11 @@ export const getEventData = (eventType) => async (dispatch, getState) => {
     if (data.length > 0) {
         payload = data;
         if (eventType === 'UPCOMING') {
-            payload = payload.filter((item) => (new Date(item.createdOn) > new Date()));
+            payload = payload.filter((item) => (getDiffInNumber(item.createdOn) > 0));
         } else if (eventType === 'PAST') {
-            payload = payload.filter((item) => (new Date(item.createdOn) < new Date()));
+            payload = payload.filter((item) => (getDiffInNumber(item.createdOn) < 0));
         } else if (eventType === 'LIVE') {
-            payload = payload.filter((item) => (new Date(item.createdOn) == new Date()));
+            payload = payload.filter((item) => (getDiffInNumber(item.createdOn) == 0));
         }
         dispatch({
             type: GET_EVENT_DATA,

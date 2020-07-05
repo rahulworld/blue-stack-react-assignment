@@ -11,10 +11,20 @@ export const getDiffInDays = (eventDate) => {
     let Difference_In_Days = parseInt(Difference_In_Time / (1000 * 3600 * 24), 10); 
     if (Difference_In_Days < 0){
         Difference_In_Days = Math.abs(Difference_In_Days) + ' Days Ago'
+    } else if(Difference_In_Days === 0){
+        Difference_In_Days = 'Today Live'
     } else {
-        Difference_In_Days = Difference_In_Days + ' Days Remain'
+        Difference_In_Days = Difference_In_Days + ' days ahead'
     }
     return Difference_In_Days
+};
+
+export const getDiffInNumber = (eventDate) => {
+    let date1 = new Date(); 
+    let date2 = new Date(eventDate); 
+    let Difference_In_Time = date2.getTime() - date1.getTime(); 
+    let Difference_In_Days = parseInt(Difference_In_Time / (1000 * 3600 * 24), 10); 
+    return Difference_In_Days;
 };
 
 export const EVENT_DATA = {
