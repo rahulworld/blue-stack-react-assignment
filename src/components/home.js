@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Modal from 'react-awesome-modal';
-import { getEventData } from '../actions';
+import DateTimePicker from 'react-datetime-picker';
+import { getEventData, setEventData, scheduleEvent } from '../actions';
 import { Header } from './common/header';
 import { EVENT_TYPE, getDiffInDays } from '../shared/constants';
 import imageIcon from "../assets/images/logo.png";
@@ -18,51 +19,84 @@ class Home extends Component {
     this.state = {
       eventType: Object.keys(EVENT_TYPE)[0],
       showModal: false,
+      scheduleModel: false,
       modalData: {},
+      date: new Date(),
     };
   }
 
-  componentDidMount() {
-    this.props.getEventData(this.state.eventType);
-  }
+    componentDidMount() {
+        this.props.setEventData(this.state.eventType);
+    }
 
     handleHideModal(){
-        this.setState({showModal: false})
+        const {modalData, date, scheduleModel, eventType} = this.state;
+        this.setState({showModal: false});
+        if(scheduleModel) {
+            this.props.scheduleEvent(modalData.id, date).then(() => {
+                this.props.getEventData(eventType);
+            });
+        }
     }
 
-    handleShowModal(data){
-        this.setState({showModal: true, modalData: data})
+    handleShowModal(data, isScheduleModel){
+        this.setState({showModal: true, modalData: data, scheduleModel: isScheduleModel});
     }
 
-  renderEventType(type){
-    this.setState({eventType: type});
-    this.props.getEventData(type);
-  }
+    renderEventType(type){
+        this.setState({eventType: type});
+        this.props.getEventData(type);
+    }
 
+    onChange = date => {
+      this.setState({ date });
+    };
 
   render() {
     const { eventsData } = this.props;
-    const { eventType, modalData } = this.state;
+    const { eventType, modalData, scheduleModel } = this.state;
+    const pricingModelView = (
+        modalData && <div className="m-3 ml-5">
+            <div className="row">
+                <img className="mr-2" src={Bitmap} width="137" height="137" />
+                <div className="flex-end">
+                    <p className="m-0 p-0" style={{ fontSize: 16 }}>{modalData.name}</p>
+                    <p className="m-0 p-0" style={{ fontSize: 14, color: '#9CA2B7' }}>{modalData.region}</p>
+                </div>
+            </div>
+            <p className="mt-2" style={{ fontSize: 20, fontWeight: 'bold' }}>Pricing</p>
+            <div className="mb-2">
+                <div style={{ fontSize: 18, fontWeight: 'bold' }}>1 Year ------ $ {modalData.price}</div>
+            </div>
+            <div type="button" className="btn btn-primary" href="javascript:void(0);" onClick={() => this.handleHideModal()}>Close</div>
+        </div>
+    );
+    const scheduleModelView = (
+        modalData && <div className="m-3 ml-5">
+            <div className="row">
+                <img className="mr-2" src={Bitmap} width="137" height="137" />
+                <div className="flex-end">
+                    <p className="m-0 p-0" style={{ fontSize: 16 }}>{modalData.name}</p>
+                    <p className="m-0 p-0" style={{ fontSize: 14, color: '#9CA2B7' }}>{modalData.region}</p>
+                </div>
+            </div>
+            <p className="mt-2" style={{ fontSize: 20, fontWeight: 'bold' }}>Schedule Time: {new Date(modalData.createdOn).toDateString()}</p>
+            <div className="mb-2">
+            <DateTimePicker
+                onChange={this.onChange}
+                value={this.state.date}
+            />
+            </div>
+            <div type="button" className="btn btn-primary" href="javascript:void(0);" onClick={() => this.handleHideModal()}>Close</div>
+        </div>
+    );
     return (
       <div>
         <Header />
         <div className="container">
             <p className="mt-4 mb-4 sub-header-color">Manage Campaigns</p>
             <Modal visible={this.state.showModal} width="400" height="383" effect="fadeInUp" onClickAway={() => this.handleHideModal()}>
-                <div className="m-3 ml-5">
-                    <div className="row">
-                        <img className="mr-2" src={Bitmap} width="137" height="137" />
-                        <div className="flex-end">
-                            <p className="m-0 p-0" style={{ fontSize: 16 }}>{modalData.name}</p>
-                            <p className="m-0 p-0" style={{ fontSize: 14, color: '#9CA2B7' }}>{modalData.region}</p>
-                        </div>
-                    </div>
-                    <p className="mt-2" style={{ fontSize: 20, fontWeight: 'bold' }}>Pricing</p>
-                    <div className="mb-2">
-                        <div style={{ fontSize: 18, fontWeight: 'bold' }}>1 Year ------ $ {modalData.price}</div>
-                    </div>
-                    <div type="button" className="btn btn-primary" href="javascript:void(0);" onClick={() => this.handleHideModal()}>Close</div>
-                </div>
+                {scheduleModel ? scheduleModelView : pricingModelView}
             </Modal>
             <ul class="nav nav-pills" style={{ marginBottom: 40, borderBottom: '2px solid #F1F1F4' }}>
                 { Object.entries(EVENT_TYPE).map((entry) =>
@@ -98,9 +132,27 @@ class Home extends Component {
                                     </div>
                                 </td>
                                 <td>
-                                    <div onClick={() => this.handleShowModal(event)}> <img className="mr-1" src={Price} width="20" height="20" /> View Pricing</div>
+                                    <div style={{ cursor: 'pointer' }} className="row td-text d-flex align-items-center" onClick={() => this.handleShowModal(event, false)}>
+                                        <img className="mr-1" src={Price} width="24" height="24" />
+                                        <span className="d-none d-md-block">View Pricing</span>
+                                    </div>
                                 </td>
-                                <td>CSV</td>
+                                <td>
+                                    <div className="row">
+                                        <div style={{ cursor: 'pointer' }} className="col-3 td-text d-flex align-items-center">
+                                            <img className="mr-2" src={FileImage} width="19" height="24" />
+                                            <span className="d-none d-md-block">CSV</span>
+                                        </div>
+                                        <div style={{ cursor: 'pointer' }} className="col-3 td-text d-flex align-items-center">
+                                            <img className="mr-2" src={Report} width="22" height="24" />
+                                            <span className="d-none d-md-block">Report</span>
+                                        </div>
+                                        <div style={{ cursor: 'pointer' }} className="col-4 td-text d-flex align-items-center" onClick={() => this.handleShowModal(event, true)}>
+                                            <img className="mr-2" src={Calender} width="24" height="24" />
+                                            <div className="d-none d-md-block">Schedule Again</div>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         )}
                     </tbody>
@@ -118,4 +170,4 @@ function mapStateToProps({eventsDetail}) {
   };
 }
 
-export default connect(mapStateToProps, { getEventData })(Home);
+export default connect(mapStateToProps, { setEventData, getEventData, scheduleEvent })(Home);

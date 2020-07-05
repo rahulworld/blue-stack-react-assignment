@@ -19,6 +19,7 @@ export const getDiffInDays = (eventDate) => {
 
 export const EVENT_DATA = {
     "data": [{
+        "id": 1,
         "name": "Test Whatsapp",
         "region": "US",
         "createdOn": 1559807714999,
@@ -28,6 +29,7 @@ export const EVENT_DATA = {
         "image_url":"../assets/images/logo.png" 
       },
       {
+        "id": 2,
         "name": "Super Jewels Quest",
         "region": "CA, FR",
         "createdOn": 1559806715124,
@@ -37,6 +39,7 @@ export const EVENT_DATA = {
         "image_url":"../assets/images/logo.png"
       },
       {
+        "id": 3,
         "name": "Mole Slayer",
         "region": "FR",
         "createdOn": 1559806711124,
@@ -46,6 +49,7 @@ export const EVENT_DATA = {
         "image_url":"../assets/images/logo.png"
       },
       {
+        "id": 4,
         "name": "Mancala Mix",
         "region": "JP",
         "createdOn": 1559806680124,
@@ -55,6 +59,7 @@ export const EVENT_DATA = {
         "image_url":"../assets/images/logo.png"
       },
       {
+        "id": 5,
         "name": "Mancala Mix1",
         "region": "JP",
         "createdOn": 1736590201222,
@@ -64,6 +69,7 @@ export const EVENT_DATA = {
         "image_url":"../assets/images/logo.png"
       },
       {
+        "id": 6,
         "name": "Mancala Mix2",
         "region": "JP",
         "createdOn": 1736590201222,
@@ -73,6 +79,7 @@ export const EVENT_DATA = {
         "image_url":"../assets/images/logo.png"
       },
       {
+        "id": 7,
         "name": "Mancala Mix3",
         "region": "JP",
         "createdOn": 1736590201222,

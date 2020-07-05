@@ -24,3 +24,11 @@ body {
   border-bottom: 3px solid #83A515;
   color: #83A515;
 }
+
+.td-text {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  color: #7788A3;
+}
